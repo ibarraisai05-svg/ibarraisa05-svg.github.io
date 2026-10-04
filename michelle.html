@@ -1,0 +1,123 @@
+<script>
+let toques = 0;
+const maximo = 10;
+const escenario = document.getElementById("escenario");
+const contador = document.getElementById("contador");
+
+function crearMonito(numero, principal = false) {
+
+    const monito = document.createElement("div");
+    monito.className = "monito";
+
+    let x, y;
+
+    if (principal) {
+        // El primero queda en el centro
+        x = -60;
+        y = -75;
+    } else {
+        // Los demás aparecen en lugares aleatorios
+        // alrededor y detrás del principal
+        x = -250 + Math.random() * 500;
+        y = -180 + Math.random() * 260;
+    }
+
+    monito.style.left = x + "px";
+    monito.style.top = y + "px";
+
+    // Los nuevos quedan detrás
+    monito.style.zIndex = principal ? 100 : numero;
+
+    // Diferentes tamaños para dar sensación de profundidad
+    const escala = principal
+        ? 1
+        : 0.65 + Math.random() * 0.25;
+
+    monito.style.transform = `scale(${escala})`;
+
+    // Todos saltan
+    monito.style.animation =
+        `saltar ${0.65 + Math.random() * 0.25}s ease-in-out infinite`;
+
+    monito.innerHTML = `
+        <div class="nombre">Michelle crack</div>
+
+        <div class="mochila"></div>
+
+        <div class="cuerpo">
+            <div class="visor">
+                <div class="brillo"></div>
+            </div>
+        </div>
+
+        <div class="pierna1"></div>
+        <div class="pierna2"></div>
+    `;
+
+    // Solo el último que apareció recibe el siguiente toque
+    monito.addEventListener("click", function(e) {
+        e.stopPropagation();
+
+        if (numero === toques + 1 && toques < maximo) {
+            siguiente();
+        }
+    });
+
+    escenario.appendChild(monito);
+}
+
+
+function siguiente() {
+
+    if (toques >= maximo) return;
+
+    toques++;
+
+    contador.textContent = `Toques: ${toques} / ${maximo}`;
+
+    // Crear el siguiente monito
+    crearMonito(toques, toques === 1);
+
+    // Cuando lleguen a 10
+    if (toques === maximo) {
+
+        contador.textContent = "🎉 ¡10 Michelle crack! 🎉";
+
+        // Esperar y reiniciar automáticamente
+        setTimeout(() => {
+
+            escenario.innerHTML = "";
+            toques = 0;
+
+            contador.textContent = "Toques: 0 / 10";
+
+            crearMonito(0, true);
+
+        }, 5000);
+    }
+}
+
+
+// Animación de salto
+const estiloSalto = document.createElement("style");
+
+estiloSalto.innerHTML = `
+@keyframes saltar {
+
+    0%, 100% {
+        margin-top: 0px;
+    }
+
+    50% {
+        margin-top: -45px;
+    }
+}
+`;
+
+document.head.appendChild(estiloSalto);
+
+
+// Crear el primer Michelle
+crearMonito(0, true);
+
+</script>
