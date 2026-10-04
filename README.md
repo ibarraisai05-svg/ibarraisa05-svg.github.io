@@ -1,2 +1,1 @@
-# username.github.io
-De Abdiel 
+index.html
